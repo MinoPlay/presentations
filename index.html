@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A personal recap of CPH Automate 2026: what network automation is learning from software engineering.">
+  <title>CPH^Automate 2026 — field notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #112b46;
+      --ink-soft: #36526d;
+      --paper: #f4f8fb;
+      --white: #ffffff;
+      --line: #b8ccdc;
+      --blue: #006eb8;
+      --cyan: #00a7c8;
+      --signal: #ff8a3d;
+      --mint: #c9f1e7;
+      --shadow: 0 22px 70px rgba(17, 43, 70, 0.13);
+      --display: "Space Grotesk", sans-serif;
+      --body: "IBM Plex Sans", sans-serif;
+      --mono: "IBM Plex Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(0, 110, 184, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 110, 184, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+      font-family: var(--body);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--signal);
+      outline-offset: 4px;
+    }
+
+    .progress {
+      position: fixed;
+      inset: 0 auto auto 0;
+      z-index: 50;
+      width: 100%;
+      height: 5px;
+      background: rgba(17, 43, 70, 0.08);
+    }
+
+    .progress__bar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--signal));
+      transition: width 180ms ease-out;
+    }
+
+    .rail {
+      position: fixed;
+      top: 50%;
+      left: 24px;
+      z-index: 40;
+      display: grid;
+      gap: 8px;
+      transform: translateY(-50%);
+    }
+
+    .rail::before {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 6px;
+      z-index: -1;
+      width: 1px;
+      content: "";
+      background: var(--line);
+    }
+
+    .rail a {
+      width: 13px;
+      height: 13px;
+      overflow: hidden;
+      color: transparent;
+      background: var(--paper);
+      border: 2px solid var(--blue);
+      border-radius: 50%;
+      transition: 180ms ease;
+    }
+
+    .rail a[aria-current="true"] {
+      background: var(--signal);
+      border-color: var(--signal);
+      transform: scale(1.35);
+    }
+
+    .slide {
+      position: relative;
+      display: grid;
+      height: 100svh;
+      padding: 2.5rem clamp(1.5rem, 8vw, 8rem);
+      overflow: hidden;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      align-items: center;
+    }
+
+    .slide::after {
+      position: absolute;
+      right: clamp(1.2rem, 4vw, 4rem);
+      bottom: 1.25rem;
+      color: var(--ink-soft);
+      font: 500 0.68rem/1 var(--mono);
+      letter-spacing: 0.09em;
+      content: attr(data-route);
+      text-transform: uppercase;
+    }
+
+    .slide--dark {
+      color: var(--white);
+      background: var(--ink);
+    }
+
+    .slide--dark::after {
+      color: rgba(255, 255, 255, 0.58);
+    }
+
+    .slide--blue {
+      color: var(--white);
+      background: var(--blue);
+    }
+
+    .slide__content {
+      width: min(1120px, 100%);
+      margin-inline: auto;
+    }
+
+    .eyebrow {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      margin: 0 0 1.4rem;
+      color: var(--blue);
+      font: 600 0.72rem/1.3 var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 30px;
+      height: 3px;
+      content: "";
+      background: var(--signal);
+    }
+
+    .slide--dark .eyebrow,
+    .slide--blue .eyebrow {
+      color: var(--mint);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--display);
+    }
+
+    h1 {
+      max-width: 960px;
+      margin-bottom: 1.5rem;
+      font-size: clamp(3.3rem, 9vw, 8.8rem);
+      line-height: 0.88;
+      letter-spacing: -0.075em;
+    }
+
+    h2 {
+      max-width: 920px;
+      margin-bottom: 2rem;
+      font-size: clamp(2rem, 4.4vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+    }
+
+    h3 {
+      margin-bottom: 0.55rem;
+      font-size: clamp(1.2rem, 2vw, 1.65rem);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+
+    .lede {
+      max-width: 780px;
+      margin-bottom: 0;
+      color: var(--ink-soft);
+      font-size: clamp(1.15rem, 2vw, 1.55rem);
+      line-height: 1.5;
+    }
+
+    .slide--dark .lede,
+    .slide--blue .lede {
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .hero__mark {
+      display: inline-block;
+      color: var(--signal);
+      transform: translateY(-0.08em);
+    }
+
+    .hero__footer {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      margin-top: clamp(3rem, 9vh, 7rem);
+      font: 500 0.78rem/1.5 var(--mono);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .key-hint {
+      display: inline-flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    kbd {
+      min-width: 1.8rem;
+      padding: 0.35rem 0.45rem;
+      color: var(--ink);
+      text-align: center;
+      background: var(--mint);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+      box-shadow: 0 2px 0 var(--cyan);
+      font: 600 0.7rem/1 var(--mono);
+    }
+
+    .thesis {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(250px, 0.55fr);
+      gap: clamp(2rem, 7vw, 7rem);
+      align-items: end;
+    }
+
+    .thesis__aside {
+      padding: 1.5rem 0 0 1.5rem;
+      border-top: 4px solid var(--signal);
+      border-left: 1px solid var(--line);
+    }
+
+    .thesis__aside strong {
+      display: block;
+      margin-bottom: 0.7rem;
+      font: 600 0.75rem/1.3 var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .thesis__aside p {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.55;
+    }
+
+    .schedule {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 3rem;
+    }
+
+    .schedule__item {
+      display: grid;
+      grid-template-columns: 5rem 1fr;
+      gap: 0.8rem;
+      padding: 0.85rem 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .schedule__time {
+      color: var(--blue);
+      font: 600 0.72rem/1.35 var(--mono);
+    }
+
+    .schedule__title {
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .schedule__speaker {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+    }
+
+    .speaker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
+
+    .speaker {
+      min-width: 0;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 7px 7px 0 rgba(0, 110, 184, 0.08);
+    }
+
+    .speaker img {
+      width: 100%;
+      aspect-ratio: 1 / 0.82;
+      display: block;
+      object-fit: cover;
+      object-position: center 25%;
+      filter: saturate(0.82) contrast(1.04);
+    }
+
+    .speaker__body {
+      padding: 0.9rem;
+    }
+
+    .speaker__body p {
+      margin-bottom: 0;
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .speaker-grid--compact {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .speaker-grid--compact h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .speaker-grid--compact .speaker__body {
+      padding: 0.6rem 0.7rem;
+    }
+
+    .speaker-grid--compact .speaker__body p {
+      margin-top: 0.2rem;
+      font-size: 0.68rem;
+      line-height: 1.3;
+    }
+
+    .speaker--center {
+      display: flex;
+      grid-column: 3 / 5;
+      grid-row: 1 / 4;
+      flex-direction: column;
+    }
+
+    .speaker--center img {
+      flex: 1;
+      min-height: 0;
+      aspect-ratio: auto;
+    }
+
+    .speaker--center h3 {
+      font-size: 1.3rem;
+    }
+
+    .speaker--wide {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: minmax(130px, 0.7fr) 1fr;
+    }
+
+    .speaker--wide img {
+      height: 100%;
+      aspect-ratio: auto;
+    }
+
+    .talk-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+      gap: clamp(2.5rem, 7vw, 7rem);
+      align-items: center;
+    }
+
+    .talk-speaker {
+      position: relative;
+      padding: 1.1rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transform: rotate(1.5deg);
+    }
+
+    .talk-speaker::before {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      width: 72px;
+      height: 24px;
+      content: "";
+      background: rgba(201, 241, 231, 0.82);
+      transform: rotate(-4deg);
+    }
+
+    .talk-speaker img {
+      width: 100%;
+      max-height: 380px;
+      display: block;
+      object-fit: cover;
+      object-position: center 25%;
+      filter: saturate(0.85);
+    }
+
+    .talk-speaker figcaption {
+      padding: 1rem 0.25rem 0.25rem;
+      color: var(--ink);
+      font: 500 0.78rem/1.45 var(--mono);
+    }
+
+    .quote {
+      max-width: 940px;
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(2.2rem, 5.1vw, 5.2rem);
+      font-weight: 600;
+      line-height: 1.03;
+      letter-spacing: -0.05em;
+    }
+
+    .quote em {
+      color: var(--signal);
+      font-style: normal;
+    }
+
+    .takeaway {
+      margin-top: 2rem;
+      padding-left: 1.25rem;
+      border-left: 4px solid var(--signal);
+    }
+
+    .takeaway__label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--blue);
+      font: 600 0.72rem/1 var(--mono);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .slide--dark .takeaway__label,
+    .slide--blue .takeaway__label {
+      color: var(--mint);
+    }
+
+    .takeaway p {
+      max-width: 730px;
+      margin: 0;
+      font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+      line-height: 1.5;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .choice {
+      min-height: 210px;
+      padding: 1.4rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .choice:nth-child(2) {
+      color: var(--white);
+      background: var(--blue);
+      border-color: var(--blue);
+      transform: translateY(-0.8rem);
+    }
+
+    .choice__tag {
+      display: inline-block;
+      margin-bottom: 2.6rem;
+      color: var(--blue);
+      font: 600 0.68rem/1 var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .choice:nth-child(2) .choice__tag {
+      color: var(--mint);
+    }
+
+    .choice p {
+      margin: 0;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .choice:nth-child(2) p {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .steps {
+      display: grid;
+      gap: 0;
+      margin-top: 2.4rem;
+      counter-reset: steps;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      counter-increment: steps;
+    }
+
+    .step::before {
+      color: var(--mint);
+      font: 600 0.85rem/1.5 var(--mono);
+      content: "0" counter(steps);
+    }
+
+    .step strong {
+      font-family: var(--display);
+      font-size: clamp(1.15rem, 2vw, 1.55rem);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(2rem, 7vw, 6rem);
+    }
+
+    .column-card {
+      padding-top: 1.2rem;
+      border-top: 4px solid var(--blue);
+    }
+
+    .column-card--signal {
+      border-color: var(--signal);
+    }
+
+    .column-card ul {
+      padding: 0;
+      margin: 1.4rem 0 0;
+      list-style: none;
+    }
+
+    .column-card li {
+      position: relative;
+      padding: 0.7rem 0 0.7rem 1.5rem;
+      border-top: 1px solid var(--line);
+      line-height: 1.45;
+    }
+
+    .column-card li::before {
+      position: absolute;
+      left: 0;
+      color: var(--signal);
+      content: "→";
+      font-family: var(--mono);
+    }
+
+    .flow {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      margin-top: 3rem;
+    }
+
+    .flow__item {
+      position: relative;
+      display: grid;
+      flex: 1;
+      min-height: 130px;
+      padding: 1.2rem;
+      place-items: center;
+      color: var(--ink);
+      text-align: center;
+      background: var(--white);
+      border: 1px solid var(--line);
+      font: 600 0.95rem/1.35 var(--mono);
+    }
+
+    .flow__item + .flow__item {
+      border-left: 0;
+    }
+
+    .flow__item + .flow__item::before {
+      position: absolute;
+      left: -0.65rem;
+      z-index: 2;
+      display: grid;
+      width: 1.3rem;
+      height: 1.3rem;
+      color: var(--white);
+      content: "›";
+      background: var(--signal);
+      border-radius: 50%;
+      place-items: center;
+    }
+
+    .community-six {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    .community-six div {
+      padding: 1.1rem;
+      color: var(--ink);
+      background: var(--mint);
+      border-left: 4px solid var(--cyan);
+    }
+
+    .community-six strong {
+      display: block;
+      font-family: var(--display);
+      font-size: 1.1rem;
+    }
+
+    .community-six span {
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+    }
+
+    .brief-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.15rem;
+      margin-top: 2.4rem;
+    }
+
+    .brief-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 380px;
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .brief-card img {
+      width: 100%;
+      height: 155px;
+      object-fit: cover;
+      object-position: center 25%;
+    }
+
+    .brief-card__body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 1.25rem;
+    }
+
+    .brief-card__body p {
+      color: var(--ink-soft);
+      font-size: 0.93rem;
+      line-height: 1.48;
+    }
+
+    .brief-card__source {
+      margin-top: auto;
+      color: var(--blue);
+      font: 600 0.68rem/1.3 var(--mono);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .operator-loop {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 2.5rem;
+    }
+
+    .operator-loop div {
+      position: relative;
+      padding: 1.25rem 0.8rem;
+      color: var(--ink);
+      text-align: center;
+      background: var(--mint);
+      font: 600 0.85rem/1.35 var(--mono);
+    }
+
+    .operator-loop div:not(:last-child)::after {
+      position: absolute;
+      top: 50%;
+      right: -0.62rem;
+      z-index: 2;
+      color: var(--signal);
+      content: "→";
+      transform: translateY(-50%);
+    }
+
+    .final-lines {
+      display: grid;
+      gap: 0;
+      max-width: 960px;
+      margin-top: 2rem;
+    }
+
+    .final-lines p {
+      display: grid;
+      grid-template-columns: 4rem 1fr;
+      gap: 1rem;
+      padding: 1rem 0;
+      margin: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      font-family: var(--display);
+      font-size: clamp(1.1rem, 2vw, 1.55rem);
+    }
+
+    .final-lines span {
+      color: var(--mint);
+      font: 600 0.75rem/2 var(--mono);
+    }
+
+    .takeaway-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: clamp(1.5rem, 4vw, 4rem);
+      align-items: center;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .tools figure {
+      margin: 0;
+      padding: 1rem;
+      color: var(--mint);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .tools svg {
+      width: 100%;
+      max-height: 110px;
+    }
+
+    .tools figcaption {
+      color: var(--white);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .tools strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-family: var(--display);
+      font-size: 1.1rem;
+    }
+
+    .source-note {
+      max-width: 860px;
+      margin-top: 2rem;
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .source-note a {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .agenda {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      display: flex;
+      width: 270px;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1.2rem 1rem;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.94);
+      border-right: 1px solid var(--line);
+    }
+
+    .agenda__title {
+      margin: 0 0 0.6rem;
+      color: var(--blue);
+      font: 600 0.68rem/1 var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .agenda a {
+      display: grid;
+      grid-template-columns: 2.6rem 1fr;
+      gap: 0.4rem;
+      padding: 0.4rem 0.5rem;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      font-size: 0.72rem;
+      line-height: 1.25;
+    }
+
+    .agenda time {
+      color: var(--blue);
+      font: 600 0.66rem/1.4 var(--mono);
+    }
+
+    .agenda small {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 0.66rem;
+    }
+
+    .agenda a.agenda--skipped {
+      color: #7a1f1f;
+      background: #ffd5d5;
+      border-left-color: #d93030;
+    }
+
+    .agenda a[aria-current="true"] {
+      background: var(--mint);
+      border-left-color: var(--signal);
+      font-weight: 600;
+    }
+
+    .rail {
+      right: 16px;
+      left: auto;
+    }
+
+    .slide {
+      padding-left: calc(270px + clamp(1.5rem, 4vw, 4rem));
+      padding-right: clamp(3rem, 5vw, 5rem);
+    }
+
+    .talk-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.3fr);
+      gap: clamp(1.5rem, 4vw, 4rem);
+    }
+
+    .talk-speaker img {
+      max-height: 260px;
+    }
+
+    .slide--dark .source-note {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .slide--dark .source-note a {
+      color: var(--mint);
+    }
+
+    @media (max-width: 900px) {
+      .agenda {
+        display: none;
+      }
+
+      .slide {
+        padding-left: clamp(1.25rem, 5vw, 3rem);
+        padding-right: clamp(1.25rem, 5vw, 3rem);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .rail {
+        display: none;
+      }
+
+      .slide {
+        padding-inline: clamp(1.25rem, 5vw, 3rem);
+      }
+
+      .thesis,
+      .talk-layout,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule,
+      .speaker-grid,
+      .brief-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .speaker-grid--compact {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .speaker--center {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+
+      .talk-speaker {
+        width: min(330px, 80%);
+        justify-self: center;
+      }
+
+      .choice-grid,
+      .takeaway-split {
+        grid-template-columns: 1fr;
+      }
+
+      .choice:nth-child(2) {
+        transform: none;
+      }
+
+      .flow,
+      .operator-loop {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .flow__item + .flow__item {
+        border-top: 0;
+        border-left: 1px solid var(--line);
+      }
+
+      .flow__item + .flow__item::before,
+      .operator-loop div:not(:last-child)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      html {
+        scroll-snap-type: none;
+      }
+
+      .slide {
+        height: auto;
+        min-height: auto;
+        padding-top: 5.5rem;
+        padding-bottom: 5.5rem;
+      }
+
+      .schedule,
+      .speaker-grid,
+      .brief-grid,
+      .community-six {
+        grid-template-columns: 1fr;
+      }
+
+      .speaker-grid--compact {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .speaker--center {
+        grid-column: 1 / -1;
+        grid-row: auto;
+      }
+
+      .speaker--center img {
+        flex: none;
+        aspect-ratio: 1 / 0.82;
+      }
+
+      .speaker--wide {
+        grid-column: auto;
+        grid-template-columns: 1fr;
+      }
+
+      .speaker--wide img {
+        aspect-ratio: 1 / 0.82;
+      }
+
+      .hero__footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+  <nav class="rail" aria-label="Slide navigation"></nav>
+
+  <aside class="agenda" aria-label="Program">
+    <p class="agenda__title">Program</p>
+    <a href="#build-buy" data-talk="garros"><time>09:15</time><span>What Should You Build When You Can Build Anything?<small>Damien Garros</small></span></a>
+    <a href="#speakers" data-talk="edin"><time>09:45</time><span>Democratizing Network Automation<small>Göran Edin</small></span></a>
+    <a href="#community" data-talk="community"><time>10:15</time><span>Transformation Through Community<small>Andreas Bækdahl &amp; Emil Commerou</small></span></a>
+    <a href="#speakers" data-talk="vurli"><time>11:15</time><span>Bootstrapping a Source of Truth<small>Constantin VURLI</small></span></a>
+    <a href="#data-trust" data-talk="dorlandt"><time>11:45</time><span>JSON Freedom or Chaos<small>Bart Dorlandt</small></span></a>
+    <a href="#speakers" data-talk="larsen"><time>12:15</time><span>Keeping ~2k IP Pools Filled<small>Kristoffer Larsen</small></span></a>
+    <a href="#vibe-ops" data-talk="hoff"><time>13:45</time><span>Vibe-ops<small>Marcus Hoff</small></span></a>
+    <a href="#memory" data-talk="shawky"><time>14:15</time><span>Memory Has No Changelog<small>Ahmed Shawky</small></span></a>
+    <a href="#speakers" data-talk="henderickx"><time>14:45</time><span>Shift Left<small>Wim Henderickx</small></span></a>
+    <a href="#dependencies" data-talk="petersen"><time>15:45</time><span>When Your Source of Truth Isn't Yours<small>Niclas Skøtt Petersen</small></span></a>
+    <a href="#lazy" data-talk="baumann"><time>16:15</time><span>Laziness: A Blessing or a Curse?<small>Urs Baumann</small></span></a>
+  </aside>
+
+  <main>
+    <section class="slide slide--dark" id="opening" data-title="Opening" data-route="CPH → automation → software engineering">
+      <div class="slide__content">
+        <p class="eyebrow">CPH^Automate · Copenhagen · 2 October 2026</p>
+        <h1>Network automation is having its <span class="hero__mark">software moment.</span></h1>
+        <p class="lede">My takeaways from 11 talks and one recurring pattern.</p>
+        <div class="hero__footer">
+          <span class="key-hint"><kbd>↓</kbd><kbd>↑</kbd> navigate</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="thesis" data-title="My thesis" data-route="01 / perspective">
+      <div class="slide__content thesis">
+        <div>
+          <p class="eyebrow">My conclusion</p>
+          <h2>Network teams are learning what software teams learned the hard way.</h2>
+          <p class="lede">Source control. Schemas. Stable interfaces. Continuous testing. Clear ownership.</p>
+        </div>
+        <aside class="thesis__aside">
+          <strong>And AI?</strong>
+          <p>A superpower, but it makes the cost of weak judgment arrive faster.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="slide" id="speakers" data-title="Speakers" data-route="02 / people behind the packets">
+      <div class="slide__content">
+        <p class="eyebrow">Speakers</p>
+        <h2>Practitioners who build, run, break and fix automation.</h2>
+        <div class="speaker-grid speaker-grid--compact">
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/DamienG.png" alt="Damien Garros"><div class="speaker__body"><h3>Damien Garros</h3><p>Co-founder &amp; CEO · OpsMill</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/GoranE.png" alt="Göran Edin"><div class="speaker__body"><h3>Göran Edin</h3><p>CTO &amp; Network Automation Architect · Ductus</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/AndreasB.jpg" alt="Andreas Bækdahl"><div class="speaker__body"><h3>Andreas Bækdahl</h3><p>Senior DevNet Architect · Wingmen Solutions</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/EmilC.jpg" alt="Emil Commerou"><div class="speaker__body"><h3>Emil Commerou</h3><p>DevNet Engineer · Wingmen Solutions</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/ConstantinV.png" alt="Constantin VURLI"><div class="speaker__body"><h3>Constantin VURLI</h3><p>Network Automation Consultant · CNS Communications</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/BartD.png" alt="Bart Dorlandt"><div class="speaker__body"><h3>Bart Dorlandt</h3><p>Owner · Dream Networking and Automation</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/KristofferL.jpg" alt="Kristoffer Larsen"><div class="speaker__body"><h3>Kristoffer Larsen</h3><p>B2C Network Engineer · Telia</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/MarcusH.jpg" alt="Marcus Hoff"><div class="speaker__body"><h3>Marcus Hoff</h3><p>Co-founder · Echo Reply</p></div></article>
+          <article class="speaker speaker--center"><img src="https://cph-automate.network/images/speakers/AhmedS.png" alt="Ahmed Shawky"><div class="speaker__body"><h3>Ahmed Shawky</h3><p>Lead Expert Scientist, Data &amp; AI · Arelion</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/WimH.jpeg" alt="Wim Henderickx"><div class="speaker__body"><h3>Wim Henderickx</h3><p>CTO, IP Division · Nokia</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/NiclasP.png" alt="Niclas Skøtt Petersen"><div class="speaker__body"><h3>Niclas Skøtt Petersen</h3><p>Network Automation Specialist</p></div></article>
+          <article class="speaker"><img src="https://cph-automate.network/images/speakers/UrsB.png" alt="Urs Baumann"><div class="speaker__body"><h3>Urs Baumann</h3><p>Solution Architect &amp; lecturer</p></div></article>
+        </div>
+        <p class="source-note">Photos and bios: <a href="https://cph-automate.network/speakers/" target="_blank" rel="noreferrer">CPH^Automate speaker page</a>.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="build-buy" data-talk="garros" data-title="Build, buy, assemble" data-route="03 / decision layer">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Damien Garros · What Should You Build?</p>
+          <h2>AI changes the question from “can we?” to “should we?”</h2>
+          <div class="choice-grid">
+            <article class="choice"><span class="choice__tag">Build</span><h3>Maximum fit</h3><p>You own every maintenance cost.</p></article>
+            <article class="choice"><span class="choice__tag">Assemble</span><h3>The practical middle</h3><p>Build what differentiates. Standardize the seams.</p></article>
+            <article class="choice"><span class="choice__tag">Buy</span><h3>Fast leverage</h3><p>Someone else’s roadmap.</p></article>
+          </div>
+          <div class="takeaway"><span class="takeaway__label">My takeaway</span><p>Don’t ask agents to invent the city. Give them building blocks, blueprints and standards.</p></div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/DamienG.png" alt="Damien Garros"><figcaption>Damien Garros</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide" id="community" data-talk="community" data-title="Community as platform" data-route="04 / operating model">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Andreas Bækdahl &amp; Emil Commerou · Community</p>
+          <h2>A dedicated team that enables the developers.</h2>
+          <div class="community-six">
+            <div><strong>Dedicated team</strong><span>Owns the developer setup and handles all the DevOps.</span></div>
+            <div><strong>40% for support</strong><span>Time set aside to answer questions and help.</span></div>
+            <div><strong>Coding Coffee</strong><span>Instead of a Friday bar: coding challenges together to nurture community.</span></div>
+          </div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/EmilC.jpg" alt="Emil Commerou"><figcaption>Emil Commerou &amp; Andreas Bækdahl</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide" id="data-trust" data-talk="dorlandt" data-title="Trust the data" data-route="05 / schema layer">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Bart Dorlandt · JSON Freedom or Chaos</p>
+          <h2>Flexibility without validation is deferred chaos.</h2>
+          <div class="two-column">
+            <article class="column-card"><h3>The rookie path</h3><ul><li>Accept arbitrary JSON</li><li>Discover drift at runtime</li></ul></article>
+            <article class="column-card column-card--signal"><h3>The engineering path</h3><ul><li>Model the contract</li><li>Validate with Pydantic, test with pytest</li></ul></article>
+          </div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/BartD.png" alt="Bart Dorlandt"><figcaption>Bart Dorlandt</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide slide--blue" id="vibe-ops" data-talk="hoff" data-title="Vibe-ops" data-route="06 / agentic operations">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Marcus Hoff · Vibe-ops</p>
+          <h2>AI did exactly what he said, not what he meant.</h2>
+          <div class="steps">
+            <div class="step"><strong>Task: refactor <em>and</em> migrate the infrastructure with AI, in one go.</strong></div>
+            <div class="step"><strong>Result: locked out of the systems.</strong></div>
+            <div class="step"><strong>Rescue: backup access, and AI again.</strong></div>
+            <div class="step"><strong>Lesson: AI follows the request, but misses the intent behind it.</strong></div>
+          </div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/MarcusH.jpg" alt="Marcus Hoff"><figcaption>Marcus Hoff</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide" id="memory" data-talk="shawky" data-title="Memory has no changelog" data-route="07 / process discovery">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Ahmed Shawky · Memory Has No Changelog</p>
+          <h2>Experts remember a process that history does not confirm.</h2>
+          <div class="two-column">
+            <article class="column-card"><h3>Ask the experts</h3><ul><li>90-page reports</li><li>Conflicting, full of screenshots</li><li>Unusable for automation</li></ul></article>
+            <article class="column-card column-card--signal"><h3>Reverse-engineer history</h3><ul><li>Mine historical data, weave in the reports</li><li>Test for acceptance, not identical results</li><li>Study the error cases</li></ul></article>
+          </div>
+          <div class="takeaway"><span class="takeaway__label">The workflow</span><p>Which panels and trunks should workers use when setting up the network?</p></div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/AhmedS.png" alt="Ahmed Shawky"><figcaption>Ahmed Shawky</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide" id="dependencies" data-talk="petersen" data-title="Cross-system dependencies" data-route="08 / integration">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Niclas Skøtt Petersen · When Your Source of Truth Isn't Yours</p>
+          <h2>Uncoordinated changes break integrations.</h2>
+          <div class="two-column">
+            <article class="column-card"><h3>What breaks things</h3><ul><li>Other systems depend directly on yours</li><li>Changes are not coordinated</li><li>No backwards compatibility</li></ul></article>
+            <article class="column-card column-card--signal"><h3>What keeps it working</h3><ul><li>Stable, versioned interfaces</li><li>Backwards compatibility</li><li>Tests across systems, clear ownership</li></ul></article>
+          </div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/NiclasP.png" alt="Niclas Skøtt Petersen"><figcaption>Niclas Skøtt Petersen</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide" id="lazy" data-talk="baumann" data-title="Laziness as fuel" data-route="09 / human motive">
+      <div class="slide__content talk-layout">
+        <div>
+          <p class="eyebrow">Urs Baumann · Laziness: A Blessing or a Curse?</p>
+          <h2>The funniest talk made the simplest point.</h2>
+          <p class="quote">We automate because we are <em>too lazy to repeat ourselves.</em></p>
+          <div class="takeaway"><span class="takeaway__label">But useful laziness has standards</span><p>Good laziness eliminates toil and leaves a tested, maintainable system. Bad laziness chases the newest tool instead of fixing fundamentals.</p></div>
+        </div>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/UrsB.png" alt="Urs Baumann"><figcaption>Urs Baumann</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide slide--dark" id="conclusion" data-title="Conclusion" data-route="10 / destination reached">
+      <div class="slide__content">
+        <p class="eyebrow">Key takeaways</p>
+        <h2>Automation is becoming ordinary software engineering.</h2>
+        <div class="takeaway-split">
+          <div class="final-lines">
+            <p><span>01</span>Network engineers are adopting more and more software development concepts.</p>
+            <p><span>02</span>The question is no longer “can I build it?” but “should I build it?”</p>
+            <p><span>03</span>AI was a small part of the day, apart from Ahmed’s and the opening talk.</p>
+            <p><span>04</span>A funny twist: we automate because we are lazy.</p>
+          </div>
+          <div class="tools" aria-label="Shovel versus excavator">
+            <figure>
+              <svg viewBox="0 0 160 110" role="img" aria-label="Shovel"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M30 14 L98 72"/><path d="M24 8 L40 8"/><path d="M96 66 L112 98 L142 84 L124 56 Z" fill="currentColor" fill-opacity=".25"/></g></svg>
+              <figcaption><strong>Shovel</strong>You do the digging.</figcaption>
+            </figure>
+            <figure>
+              <svg viewBox="0 0 160 110" role="img" aria-label="Excavator"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="84" width="76" height="16" rx="8"/><path d="M26 84 V62 H62 V84 Z" fill="currentColor" fill-opacity=".25"/><path d="M62 70 L96 30 L130 56"/><path d="M130 56 L146 90 L124 94 Z" fill="currentColor" fill-opacity=".25"/></g></svg>
+              <figcaption><strong>Excavator</strong>AI: far more power, but you still steer.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="takeaway"><span class="takeaway__label">My take</span><p>AI is an excavator, not a shovel. It moves more earth, so it matters even more where you point it.</p></div>
+        <p class="source-note">Sources: <a href="https://cph-automate.network/schedule/" target="_blank" rel="noreferrer">schedule</a>, <a href="https://cph-automate.network/speakers/" target="_blank" rel="noreferrer">speakers</a>, <a href="https://cph-automate.network/talks/" target="_blank" rel="noreferrer">talks</a>. Takeaways are personal conclusions.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const rail = document.querySelector(".rail");
+    const progressBar = document.querySelector(".progress__bar");
+
+    slides.forEach((slide, index) => {
+      const link = document.createElement("a");
+      link.href = `#${slide.id}`;
+      link.textContent = `${index + 1}. ${slide.dataset.title}`;
+      link.setAttribute("aria-label", `Go to slide ${index + 1}: ${slide.dataset.title}`);
+      rail.appendChild(link);
+    });
+
+    const links = [...rail.querySelectorAll("a")];
+
+    const fitSlides = () => {
+      const stacked = window.matchMedia("(max-width: 620px)").matches;
+      slides.forEach((slide) => {
+        const content = slide.querySelector(".slide__content");
+        content.style.zoom = "";
+        if (stacked) return;
+        const style = getComputedStyle(slide);
+        const available = slide.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom) - 24;
+        if (content.offsetHeight > available) content.style.zoom = Math.max(available / content.offsetHeight, 0.4);
+      });
+    };
+
+    fitSlides();
+    window.addEventListener("resize", fitSlides);
+    window.addEventListener("load", fitSlides);
+    document.fonts.ready.then(fitSlides);
+
+    const setActiveSlide = (index) => {
+      links.forEach((link, linkIndex) => {
+        if (linkIndex === index) {
+          link.setAttribute("aria-current", "true");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      const talk = slides[index].dataset.talk;
+      const agenda = [...document.querySelectorAll(".agenda a")];
+      const covered = new Set(slides.map((s) => s.dataset.talk).filter(Boolean));
+      let reached = -1;
+      slides.slice(0, index + 1).forEach((s) => {
+        if (s.dataset.talk) reached = agenda.findIndex((a) => a.dataset.talk === s.dataset.talk);
+      });
+      agenda.forEach((a, i) => {
+        a.classList.toggle("agenda--skipped", i < reached && !covered.has(a.dataset.talk));
+        if (talk && a.dataset.talk === talk) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+      document.title = `${slides[index].dataset.title} — CPH^Automate field notes`;
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActiveSlide(slides.indexOf(visible.target));
+    }, { threshold: [0.45, 0.7] });
+
+    slides.forEach((slide) => observer.observe(slide));
+    setActiveSlide(0);
+
+    document.addEventListener("keydown", (event) => {
+      if (!["ArrowDown", "ArrowRight", "PageDown", " ", "ArrowUp", "ArrowLeft", "PageUp", "Home", "End"].includes(event.key)) return;
+
+      const current = links.findIndex((link) => link.getAttribute("aria-current") === "true");
+      let next = current;
+
+      if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(event.key)) next = Math.min(current + 1, slides.length - 1);
+      if (["ArrowUp", "ArrowLeft", "PageUp"].includes(event.key)) next = Math.max(current - 1, 0);
+      if (event.key === "Home") next = 0;
+      if (event.key === "End") next = slides.length - 1;
+
+      if (next !== current) {
+        event.preventDefault();
+        slides[next].scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
+    });
+  </script>
+</body>
+</html>
