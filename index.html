@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A personal recap of CPH Automate 2026: what network automation is learning from software engineering.">
-  <title>CPH^Automate 2026 — field notes</title>
+  <title>CPH^Automate 2026 — field notes // 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --ink: #112b46;
@@ -1015,6 +1015,85 @@
         animation-iteration-count: 1 !important;
       }
     }
+    /* ===== Futuristic theme overrides ===== */
+    :root {
+      --ink: #e6f6ff;
+      --ink-soft: #9db8cc;
+      --paper: #05070f;
+      --white: #ffffff;
+      --line: rgba(0, 240, 255, 0.35);
+      --blue: #00f0ff;
+      --cyan: #00f0ff;
+      --signal: #ff2bd6;
+      --mint: #7dffb3;
+      --shadow: 0 0 40px rgba(0, 240, 255, 0.18);
+      --display: "Orbitron", "Space Grotesk", sans-serif;
+      --body: "IBM Plex Sans", sans-serif;
+    }
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(120, 40, 255, 0.28), transparent 55%),
+        radial-gradient(ellipse at 90% 100%, rgba(0, 240, 255, 0.2), transparent 55%),
+        linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px),
+        var(--paper);
+      background-size: auto, auto, 48px 48px, 48px 48px, auto;
+      background-attachment: fixed;
+    }
+    h1, h2, h3 { text-transform: uppercase; font-weight: 700; letter-spacing: 0.02em; }
+    h1 { font-size: clamp(2.6rem, 7vw, 6.6rem); line-height: 1; font-weight: 900;
+      background: linear-gradient(90deg, #00f0ff, #b66dff 55%, #ff2bd6);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 18px rgba(0, 240, 255, 0.45)); }
+    h2 { font-size: clamp(1.7rem, 3.6vw, 3.3rem); line-height: 1.1; text-shadow: 0 0 22px rgba(0, 240, 255, 0.5); }
+    h3 { letter-spacing: 0.04em; color: var(--cyan); }
+    .hero__mark { color: var(--signal); -webkit-text-fill-color: var(--signal); text-shadow: 0 0 20px var(--signal); animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.45; } }
+    .progress { height: 3px; background: rgba(0, 240, 255, 0.12); }
+    .progress__bar { background: linear-gradient(90deg, var(--cyan), #b66dff, var(--signal)); box-shadow: 0 0 14px var(--cyan); }
+    .rail::before { background: var(--line); }
+    .rail a { background: transparent; border: 1px solid var(--cyan); border-radius: 2px; transform: rotate(45deg); }
+    .rail a[aria-current="true"] { background: var(--signal); border-color: var(--signal); box-shadow: 0 0 14px var(--signal); transform: rotate(45deg) scale(1.3); }
+    .slide--dark, .slide--blue { background: transparent; color: var(--ink); }
+    .slide--blue { background: linear-gradient(135deg, rgba(120, 40, 255, 0.35), rgba(0, 240, 255, 0.12)); }
+    .slide::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 4px);
+    }
+    .slide::after { color: var(--cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); }
+    .slide--dark::after { color: var(--cyan); }
+    .slide__content { position: relative; z-index: 1; }
+    .lede, .slide--dark .lede, .slide--blue .lede { color: var(--ink-soft); }
+    .eyebrow, .slide--dark .eyebrow, .slide--blue .eyebrow { color: var(--cyan); text-shadow: 0 0 10px rgba(0, 240, 255, 0.6); }
+    .eyebrow::before { width: 34px; height: 2px; background: var(--signal); box-shadow: 0 0 10px var(--signal); }
+    kbd { color: var(--cyan); background: transparent; border: 1px solid var(--cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
+    .speaker, .choice, .step, .column-card, .takeaway, .quote, .tools, .talk-speaker, .thesis__aside, .agenda {
+      color: var(--ink);
+      background: rgba(10, 22, 40, 0.6) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 4px !important;
+      box-shadow: var(--shadow), inset 0 0 24px rgba(0, 240, 255, 0.05) !important;
+      backdrop-filter: blur(8px);
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .speaker:hover, .choice:hover, .step:hover, .column-card:hover, .takeaway:hover { border-color: var(--cyan) !important; box-shadow: 0 0 34px rgba(0, 240, 255, 0.35) !important; }
+    .column-card--signal { border-color: var(--signal) !important; box-shadow: 0 0 30px rgba(255, 43, 214, 0.25) !important; }
+    .choice__tag, .takeaway__label { color: var(--paper); background: var(--cyan); border-radius: 2px; box-shadow: 0 0 12px rgba(0, 240, 255, 0.6); }
+    .speaker *, .choice *, .step *, .column-card *, .takeaway *, .quote *, .tools * { color: inherit; }
+    .takeaway__label, .choice__tag { color: var(--paper) !important; }
+    .agenda a:hover, a:hover { color: var(--cyan); }
+    .flow__item, .brief-card {
+      color: var(--ink); background: rgba(10, 22, 40, 0.6) !important; border: 1px solid var(--line) !important; border-radius: 4px !important;
+    }
+    .flow__item *, .brief-card * { color: inherit; }
+    .community-six div, .operator-loop div, .agenda a[aria-current="true"], .talk-speaker::before {
+      background: rgba(0, 240, 255, 0.1); color: var(--ink); border: 1px solid var(--line);
+    }
+    .community-six div *, .operator-loop div *, .agenda a[aria-current="true"] * { color: var(--ink); }
+    .agenda a.agenda--skipped { background: rgba(255, 43, 214, 0.12); color: var(--ink-soft); }
+    @media (prefers-reduced-motion: reduce) { .hero__mark { animation: none; } }
   </style>
 </head>
 <body>
