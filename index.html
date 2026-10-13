@@ -770,7 +770,7 @@
 
     .tools svg {
       width: 100%;
-      max-height: 110px;
+      max-height: 160px;
     }
 
     .tools figcaption {
@@ -804,7 +804,7 @@
       inset: 0 auto 0 0;
       z-index: 40;
       display: flex;
-      width: 270px;
+      width: 230px;
       flex-direction: column;
       justify-content: center;
       padding: 1.2rem 1rem;
@@ -861,17 +861,21 @@
     }
 
     .slide {
-      padding-left: calc(270px + clamp(1.5rem, 4vw, 4rem));
-      padding-right: clamp(3rem, 5vw, 5rem);
+      padding-left: calc(230px + clamp(1.5rem, 3vw, 3.5rem));
+      padding-right: clamp(1.5rem, 3vw, 3.5rem);
+    }
+
+    .slide__content {
+      width: 100%;
     }
 
     .talk-layout {
-      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.3fr);
-      gap: clamp(1.5rem, 4vw, 4rem);
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.36fr);
+      gap: clamp(1.5rem, 3vw, 3.5rem);
     }
 
     .talk-speaker img {
-      max-height: 260px;
+      max-height: min(56svh, 480px);
     }
 
     .slide--dark .source-note {
@@ -1094,6 +1098,13 @@
     .community-six div *, .operator-loop div *, .agenda a[aria-current="true"] * { color: var(--ink); }
     .agenda a.agenda--skipped { background: rgba(255, 43, 214, 0.12); color: var(--ink-soft); }
     @media (prefers-reduced-motion: reduce) { .hero__mark { animation: none; } }
+    @media (min-width: 901px) {
+      .slide h2 { max-width: none; font-size: clamp(2rem, 3.6vw, 3.8rem); }
+      .choice-grid, .community-six, .operator-loop, .steps { margin-top: clamp(1.5rem, 4svh, 3rem); gap: 1.2rem; }
+      .choice, .community-six div, .operator-loop div, .step, .column-card { padding: clamp(1.2rem, 2.4vw, 2rem); }
+      .choice h3, .community-six strong, .step h3 { font-size: clamp(1.2rem, 1.9vw, 1.8rem); }
+      .choice p, .community-six span, .step p, .takeaway p { font-size: clamp(1rem, 1.35vw, 1.3rem); line-height: 1.5; }
+    }
   </style>
 </head>
 <body>
@@ -1268,7 +1279,7 @@
     <section class="slide slide--dark" id="conclusion" data-title="Conclusion" data-route="10 / destination reached">
       <div class="slide__content">
         <p class="eyebrow">Key takeaways</p>
-        <h2>Automation is becoming ordinary software engineering.</h2>
+        <h2>The day's summary</h2>
         <div class="takeaway-split">
           <div class="final-lines">
             <p><span>01</span>Network engineers are adopting more and more software development concepts.</p>
@@ -1278,11 +1289,11 @@
           </div>
           <div class="tools" aria-label="Shovel versus excavator">
             <figure>
-              <svg viewBox="0 0 160 110" role="img" aria-label="Shovel"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M30 14 L98 72"/><path d="M24 8 L40 8"/><path d="M96 66 L112 98 L142 84 L124 56 Z" fill="currentColor" fill-opacity=".25"/></g></svg>
+              <svg viewBox="0 0 240 160" role="img" aria-label="Shovel digging into a pile of soil"><ellipse cx="120" cy="146" rx="108" ry="9" fill="#000" opacity=".25"/><path d="M150 146 C158 112 182 98 206 108 C222 116 226 134 226 146 Z" fill="#7a5230"/><path d="M168 146 C174 124 192 116 210 124 C218 130 220 138 220 146 Z" fill="#94683c"/><g transform="rotate(32 100 80)"><rect x="96" y="2" width="9" height="86" rx="4" fill="#c58a4a" stroke="#6b4421" stroke-width="2"/><path d="M82 8 H119 a9 9 0 0 0 0 -2 V4 a9 9 0 0 0 -9 -9 H91 a9 9 0 0 0 -9 9 Z" transform="translate(0 6)" fill="none" stroke="#3b3b3b" stroke-width="7" stroke-linejoin="round"/><rect x="92" y="84" width="17" height="12" rx="2" fill="#8a949e" stroke="#4a525a" stroke-width="2"/><path d="M80 96 H121 C121 128 112 150 100.5 156 C89 150 80 128 80 96 Z" fill="#c9d3dc" stroke="#4a525a" stroke-width="3"/><path d="M100.5 100 V148" stroke="#8a949e" stroke-width="2"/></g></svg>
               <figcaption><strong>Shovel</strong>You do the digging.</figcaption>
             </figure>
             <figure>
-              <svg viewBox="0 0 160 110" role="img" aria-label="Excavator"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="84" width="76" height="16" rx="8"/><path d="M26 84 V62 H62 V84 Z" fill="currentColor" fill-opacity=".25"/><path d="M62 70 L96 30 L130 56"/><path d="M130 56 L146 90 L124 94 Z" fill="currentColor" fill-opacity=".25"/></g></svg>
+              <svg viewBox="0 0 240 160" role="img" aria-label="Yellow excavator digging soil"><ellipse cx="120" cy="150" rx="110" ry="7" fill="#000" opacity=".25"/><path d="M0 150 C30 140 70 138 100 150 Z" fill="#7a5230"/><path d="M168 150 C176 130 200 124 232 150 Z" fill="#7a5230"/><rect x="28" y="116" width="100" height="28" rx="14" fill="#2a2a2e"/><rect x="34" y="122" width="88" height="16" rx="8" fill="#44444a"/><g fill="#8a8a92"><circle cx="46" cy="130" r="5"/><circle cx="78" cy="130" r="5"/><circle cx="110" cy="130" r="5"/></g><rect x="38" y="98" width="82" height="20" rx="4" fill="#f5b800" stroke="#7a5c00" stroke-width="2"/><path d="M44 98 V62 a6 6 0 0 1 6 -6 H88 a6 6 0 0 1 5 3 L108 98 Z" fill="#ffc81a" stroke="#7a5c00" stroke-width="2"/><path d="M54 66 H86 L98 96 H54 Z" fill="#9fdcf5" stroke="#7a5c00" stroke-width="2"/><path d="M70 66 L66 96" stroke="#fff" opacity=".6" stroke-width="3"/><rect x="40" y="50" width="52" height="6" rx="3" fill="#2a2a2e"/><path d="M100 90 L146 38 L158 48 L114 100 Z" fill="#ffc81a" stroke="#7a5c00" stroke-width="2"/><path d="M146 38 L196 64 L188 78 L140 54 Z" fill="#f5b800" stroke="#7a5c00" stroke-width="2"/><path d="M188 60 L206 112 L170 118 L166 92 Z" fill="#6b7078" stroke="#33363a" stroke-width="3"/><path d="M200 112 l4 6 l-6 -2 l-5 6 l-3 -6 Z" fill="#33363a"/><circle cx="146" cy="43" r="5" fill="#2a2a2e"/><circle cx="192" cy="68" r="5" fill="#2a2a2e"/><path d="M174 116 C176 128 190 134 206 130" fill="none" stroke="#7a5230" stroke-width="5" stroke-linecap="round"/></svg>
               <figcaption><strong>Excavator</strong>AI: far more power, but you still steer.</figcaption>
             </figure>
           </div>
