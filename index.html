@@ -1152,6 +1152,13 @@
       .choice h3, .community-six strong, .step h3 { font-size: clamp(1.2rem, 1.9vw, 1.8rem); }
       .choice p, .community-six span, .step p, .takeaway p { font-size: clamp(1rem, 1.35vw, 1.3rem); line-height: 1.5; }
     }
+
+    .party { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .party span { position: absolute; font-size: clamp(1.4rem, 2.6vw, 2.6rem); opacity: .75; animation: partyfloat 6s ease-in-out infinite; }
+    .party span:nth-child(even) { animation-delay: -3s; }
+    @keyframes partyfloat { 0%,100% { transform: translateY(0) rotate(var(--r)); } 50% { transform: translateY(-8px) rotate(calc(var(--r) * -1)); } }
+    @media (prefers-reduced-motion: reduce) { .party span { animation: none; } }
+    @media (max-width: 700px) { .party span:nth-child(n+5) { display: none; } }
   </style>
 </head>
 <body>
@@ -1361,6 +1368,28 @@
     </section>
   </main>
 
+  <script>
+    (() => {
+      const icons = ["🇱🇹", "🎂", "🎈", "🇩🇰", "🎉", "🎁", "🎈", "🥳"];
+      const spots = [
+        ["2%", "4%"], ["2%", "88%"], ["46%", "1%"], ["50%", "94%"],
+        ["86%", "3%"], ["88%", "42%"], ["8%", "46%"], ["84%", "92%"]
+      ];
+      document.querySelectorAll(".slide").forEach((slide, i) => {
+        const d = document.createElement("div");
+        d.className = "party";
+        d.setAttribute("aria-hidden", "true");
+        spots.forEach(([t, l], j) => {
+          const k = (i + j) % icons.length;
+          const sp = document.createElement("span");
+          sp.textContent = icons[k];
+          sp.style.cssText = `top:${t};left:${l};--r:${(j % 2 ? 1 : -1) * (8 + j * 3)}deg`;
+          d.appendChild(sp);
+        });
+        slide.prepend(d);
+      });
+    })();
+  </script>
   <script>
     const slides = [...document.querySelectorAll(".slide")];
     const rail = document.querySelector(".rail");
