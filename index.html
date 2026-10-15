@@ -435,10 +435,37 @@
       filter: saturate(0.85);
     }
 
+    .talk-speaker__pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .talk-speaker__pair img {
+      min-width: 0;
+      aspect-ratio: 3 / 4;
+    }
+
     .talk-speaker figcaption {
       padding: 1rem 0.25rem 0.25rem;
       color: var(--ink);
       font: 500 0.78rem/1.45 var(--mono);
+    }
+
+    .talk-speaker figcaption strong {
+      display: block;
+      font-weight: 700;
+    }
+
+    .talk-speaker figcaption span {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.72rem;
+      opacity: 0.75;
+    }
+
+    .talk-speaker figcaption span:last-child {
+      margin-bottom: 0;
     }
 
     .quote {
@@ -590,6 +617,26 @@
       font-family: var(--mono);
     }
 
+    .talk-points {
+      padding: 0;
+      margin: 1rem 0;
+      list-style: none;
+    }
+
+    .talk-points li {
+      position: relative;
+      padding: 0.3rem 0 0.3rem 1.5rem;
+      line-height: 1.4;
+    }
+
+    .talk-points li::before {
+      position: absolute;
+      left: 0;
+      color: var(--signal);
+      content: "→";
+      font-family: var(--mono);
+    }
+
     .flow {
       display: flex;
       gap: 0;
@@ -631,7 +678,7 @@
 
     .community-six {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.9rem;
       margin-top: 2rem;
     }
@@ -1184,9 +1231,16 @@
             <article class="choice"><span class="choice__tag">Assemble</span><h3>The practical middle</h3><p>Build what differentiates. Standardize the seams.</p></article>
             <article class="choice"><span class="choice__tag">Buy</span><h3>Fast leverage</h3><p>Someone else’s roadmap.</p></article>
           </div>
-          <div class="takeaway"><span class="takeaway__label">My takeaway</span><p>Don’t ask agents to invent the city. Give them building blocks, blueprints and standards.</p></div>
+          <ul class="talk-points">
+            <li>Well known in network automation circles</li>
+            <li>Works at a consultancy that also provides software products</li>
+            <li>Pre-AI is a shovel, post-AI is an excavator</li>
+            <li>Custom software has never been easier to produce</li>
+            <li>The question is no longer “can we build it?” but “should we?”</li>
+            <li>Build vs. buy is a big trade-off</li>
+          </ul>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/DamienG.png" alt="Damien Garros"><figcaption>Damien Garros</figcaption></figure>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/DamienG.png" alt="Damien Garros"><figcaption><strong>Damien Garros</strong><span>Co-founder &amp; CEO · OpsMill</span></figcaption></figure>
       </div>
     </section>
 
@@ -1196,12 +1250,13 @@
           <p class="eyebrow">Andreas Bækdahl &amp; Emil Commerou · Community</p>
           <h2>A dedicated team that enables the developers.</h2>
           <div class="community-six">
-            <div><strong>Dedicated team</strong><span>Owns the developer setup and handles all the DevOps.</span></div>
-            <div><strong>40% for support</strong><span>Time set aside to answer questions and help.</span></div>
-            <div><strong>Coding Coffee</strong><span>Instead of a Friday bar: coding challenges together to nurture community.</span></div>
+            <div><strong>Not about AI or automation</strong><span>The talk was about how a team works, not the tooling.</span></div>
+            <div><strong>Dedicated DevOps team</strong><span>Handles all CI/CD work and the developer setup.</span></div>
+            <div><strong>Almost half on support</strong><span>Because of that, ~40% of their time goes to answering questions and helping out.</span></div>
+            <div><strong>Coding Cafe</strong><span>Alongside the Friday bar: coding challenges together to nurture community.</span></div>
           </div>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/EmilC.jpg" alt="Emil Commerou"><figcaption>Emil Commerou &amp; Andreas Bækdahl</figcaption></figure>
+        <figure class="talk-speaker talk-speaker--duo"><div class="talk-speaker__pair"><img src="https://cph-automate.network/images/speakers/AndreasB.jpg" alt="Andreas Bækdahl"><img src="https://cph-automate.network/images/speakers/EmilC.jpg" alt="Emil Commerou"></div><figcaption><strong>Andreas Bækdahl</strong><span>Senior DevNet Architect · Wingmen Solutions</span><strong>Emil Commerou</strong><span>DevNet Engineer · Wingmen Solutions</span></figcaption></figure>
       </div>
     </section>
 
@@ -1211,11 +1266,12 @@
           <p class="eyebrow">Bart Dorlandt · JSON Freedom or Chaos</p>
           <h2>Flexibility without validation is deferred chaos.</h2>
           <div class="two-column">
-            <article class="column-card"><h3>The rookie path</h3><ul><li>Accept arbitrary JSON</li><li>Discover drift at runtime</li></ul></article>
-            <article class="column-card column-card--signal"><h3>The engineering path</h3><ul><li>Model the contract</li><li>Validate with Pydantic, test with pytest</li></ul></article>
+            <article class="column-card"><h3>The pain</h3><ul><li>All data stored as JSON files</li><li>No schemas</li><li>No testing or validation of the data</li></ul></article>
+            <article class="column-card column-card--signal"><h3>The journey</h3><ul><li>Standardized the JSON format</li><li>Introduced schemas</li><li>Pydantic for validation, pytest for test automation</li></ul></article>
           </div>
+          <div class="takeaway"><span class="takeaway__label">My open question</span><p>Why use JSON files as the backend instead of an actual database?</p></div>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/BartD.png" alt="Bart Dorlandt"><figcaption>Bart Dorlandt</figcaption></figure>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/BartD.png" alt="Bart Dorlandt"><figcaption><strong>Bart Dorlandt</strong><span>Owner · Dream Networking and Automation</span></figcaption></figure>
       </div>
     </section>
 
@@ -1225,13 +1281,13 @@
           <p class="eyebrow">Marcus Hoff · Vibe-ops</p>
           <h2>AI did exactly what he said, not what he meant.</h2>
           <div class="steps">
-            <div class="step"><strong>Task: refactor <em>and</em> migrate the infrastructure with AI, in one go.</strong></div>
-            <div class="step"><strong>Result: locked out of the systems.</strong></div>
-            <div class="step"><strong>Rescue: backup access, and AI again.</strong></div>
+            <div class="step"><strong>Context: using AI to modernize infrastructure, upgrading and migrating it.</strong></div>
+            <div class="step"><strong>His rule: never refactor and migrate at the same time, you won’t know what broke.</strong></div>
+            <div class="step"><strong>He broke his own rule and got locked out of the system.</strong></div>
             <div class="step"><strong>Lesson: AI follows the request, but misses the intent behind it.</strong></div>
           </div>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/MarcusH.jpg" alt="Marcus Hoff"><figcaption>Marcus Hoff</figcaption></figure>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/MarcusH.jpg" alt="Marcus Hoff"><figcaption><strong>Marcus Hoff</strong><span>Co-founder · Echo Reply</span></figcaption></figure>
       </div>
     </section>
 
@@ -1241,12 +1297,13 @@
           <p class="eyebrow">Ahmed Shawky · Memory Has No Changelog</p>
           <h2>Experts remember a process that history does not confirm.</h2>
           <div class="two-column">
-            <article class="column-card"><h3>Ask the experts</h3><ul><li>90-page reports</li><li>Conflicting, full of screenshots</li><li>Unusable for automation</li></ul></article>
-            <article class="column-card column-card--signal"><h3>Reverse-engineer history</h3><ul><li>Mine historical data, weave in the reports</li><li>Test for acceptance, not identical results</li><li>Study the error cases</li></ul></article>
+            <article class="column-card"><h3>Ask the experts</h3><ul><li>Document the flow only they know</li><li>Lots of unuseful information</li><li>Conflicting reports full of screenshots</li><li>Unusable for automation</li></ul></article>
+            <article class="column-card column-card--signal"><h3>Reverse-engineer history with AI</h3><ul><li>Use past orders and historical data to build rules and a decision tree</li><li>Aim for correctness, not exactness: equivalent answers that are still right</li><li>Study the error cases, talk to the experts, adjust the ruleset</li></ul></article>
           </div>
           <div class="takeaway"><span class="takeaway__label">The workflow</span><p>Which panels and trunks should workers use when setting up the network?</p></div>
+          <div class="takeaway"><span class="takeaway__label">The result</span><p>~60% at first, ~80% predicted as experts would decide. Most errors were bad documentation or human error; only ~5% were real model errors.</p></div>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/AhmedS.png" alt="Ahmed Shawky"><figcaption>Ahmed Shawky</figcaption></figure>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/AhmedS.png" alt="Ahmed Shawky"><figcaption><strong>Ahmed Shawky</strong><span>Lead Expert Scientist, Data &amp; AI · Arelion</span></figcaption></figure>
       </div>
     </section>
 
@@ -1256,11 +1313,11 @@
           <p class="eyebrow">Niclas Skøtt Petersen · When Your Source of Truth Isn't Yours</p>
           <h2>Uncoordinated changes break integrations.</h2>
           <div class="two-column">
-            <article class="column-card"><h3>What breaks things</h3><ul><li>Other systems depend directly on yours</li><li>Changes are not coordinated</li><li>No backwards compatibility</li></ul></article>
-            <article class="column-card column-card--signal"><h3>What keeps it working</h3><ul><li>Stable, versioned interfaces</li><li>Backwards compatibility</li><li>Tests across systems, clear ownership</li></ul></article>
+            <article class="column-card"><h3>The hypothetical story</h3><ul><li>Sales and production databases need to talk</li><li>First nothing critical, business was happy, so it was left as is</li><li>Unnoticed, the dependency became business critical</li><li>Production updated its API, the system broke, emergency fix ASAP</li></ul></article>
+            <article class="column-card column-card--signal"><h3>The takeaways</h3><ul><li>Have interfaces</li><li>Use version control</li><li>Know who your customers are</li><li>Ownership matters</li></ul></article>
           </div>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/NiclasP.png" alt="Niclas Skøtt Petersen"><figcaption>Niclas Skøtt Petersen</figcaption></figure>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/NiclasP.png" alt="Niclas Skøtt Petersen"><figcaption><strong>Niclas Skøtt Petersen</strong><span>Network Automation Specialist</span></figcaption></figure>
       </div>
     </section>
 
@@ -1272,7 +1329,7 @@
           <p class="quote">We automate because we are <em>too lazy to repeat ourselves.</em></p>
           <div class="takeaway"><span class="takeaway__label">But useful laziness has standards</span><p>Good laziness eliminates toil and leaves a tested, maintainable system. Bad laziness chases the newest tool instead of fixing fundamentals.</p></div>
         </div>
-        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/UrsB.png" alt="Urs Baumann"><figcaption>Urs Baumann</figcaption></figure>
+        <figure class="talk-speaker"><img src="https://cph-automate.network/images/speakers/UrsB.png" alt="Urs Baumann"><figcaption><strong>Urs Baumann</strong><span>Solution Architect &amp; lecturer</span></figcaption></figure>
       </div>
     </section>
 
